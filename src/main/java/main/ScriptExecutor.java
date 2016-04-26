@@ -5,8 +5,13 @@ import java.io.*;
 public class ScriptExecutor {
 
 
-    public static String execScript(String script) throws IOException {
-        FileWriter fw = new FileWriter("script.sh");
+    public static String execScript(String script)  {
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter("script.sh");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         PrintWriter pw = new PrintWriter(fw);
 
@@ -26,8 +31,12 @@ public class ScriptExecutor {
                 InputStreamReader(proc.getInputStream()));
         StringBuilder result = new StringBuilder();
         String line;
-        while( (line = stdInput.readLine()) != null) {
-            result.append(line);
+        try {
+            while( (line = stdInput.readLine()) != null) {
+                result.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return result.toString();
     }

@@ -5,6 +5,8 @@ import networkScan.NetworkScanPane;
 import systemFileScan.SystemFileScanPane;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 /**
@@ -38,5 +40,14 @@ class TabbedPane extends JFrame
         tabbedPane.addTab( "Page 2", panel2 );
         tabbedPane.addTab( "Page 3", panel3 );
         topPanel.add( tabbedPane, BorderLayout.CENTER );
+        tabbedPane.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                if(tabbedPane.getSelectedIndex() == 2){
+                    SystemFileScanPane fileScanPane = (SystemFileScanPane)panel3;
+                    fileScanPane.activate();
+                }
+
+            }
+        });
     }
 }
