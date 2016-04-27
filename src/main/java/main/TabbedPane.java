@@ -43,10 +43,14 @@ class TabbedPane extends JFrame
         tabbedPane.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 if(tabbedPane.getSelectedIndex() == 2){
-                    SystemFileScanPane fileScanPane = (SystemFileScanPane)panel3;
+                	SystemFileScanPane fileScanPane = (SystemFileScanPane)panel3;
                     fileScanPane.activate();
+                } else {
+                	if(tabbedPane.getSelectedIndex() == 0){
+                		NetworkScanPane networkScanPane = (NetworkScanPane)panel1;
+                		networkScanPane.monitorPorts();
+                	}
                 }
-
             }
         });
     }
