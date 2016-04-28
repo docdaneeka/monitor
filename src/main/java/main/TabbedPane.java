@@ -22,7 +22,7 @@ class TabbedPane extends JFrame
     public TabbedPane()
     {
         setTitle( "Monitoring cyber-zagrozen" );
-        setSize( 600, 500 );
+        setSize( 800, 500 );
         setBackground( Color.gray );
 
         JPanel topPanel = new JPanel();
@@ -36,15 +36,18 @@ class TabbedPane extends JFrame
 
         // Create a tabbed pane
         tabbedPane = new JTabbedPane();
-        tabbedPane.addTab( "Page 1", panel1 );
-        tabbedPane.addTab( "Page 2", panel2 );
-        tabbedPane.addTab( "Page 3", panel3 );
+        tabbedPane.addTab( "Network", panel1 );
+        tabbedPane.addTab( "Device usage", panel2 );
+        tabbedPane.addTab( "System log", panel3 );
         topPanel.add( tabbedPane, BorderLayout.CENTER );
         tabbedPane.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 if(tabbedPane.getSelectedIndex() == 2){
                 	SystemFileScanPane fileScanPane = (SystemFileScanPane)panel3;
                     fileScanPane.activate();
+                } else if(tabbedPane.getSelectedIndex() == 1){
+                    DeviceScanPane deviceScanPane = (DeviceScanPane) panel2;
+                    deviceScanPane.activate();
                 } else {
                 	if(tabbedPane.getSelectedIndex() == 0){
                 		NetworkScanPane networkScanPane = (NetworkScanPane)panel1;

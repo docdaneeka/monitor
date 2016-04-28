@@ -15,14 +15,15 @@ public class ScriptExecutor {
 
         PrintWriter pw = new PrintWriter(fw);
 
-        pw.println("#!/bin/bash");
+        pw.println("#!/bin/sh");
+//        pw.println("#!/bin/bash");
         pw.println(script);
         pw.close();
 
         Process proc = null;
 
         try {
-            proc = Runtime.getRuntime().exec("script.sh");
+            proc = Runtime.getRuntime().exec(System.getProperty("user.dir") + File.separator + "script.sh");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -33,7 +34,7 @@ public class ScriptExecutor {
         String line;
         try {
             while( (line = stdInput.readLine()) != null) {
-                result.append(line);
+                result.append(line + "\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
