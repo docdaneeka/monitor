@@ -19,7 +19,10 @@ public class ScriptExecutor {
 //        pw.println("#!/bin/bash");
         pw.println(script);
         pw.close();
-
+        File file = new File("script.sh");
+        file.setExecutable(true);
+        file.setReadable(true);
+        file.setWritable(true);
         Process proc = null;
 
         try {
