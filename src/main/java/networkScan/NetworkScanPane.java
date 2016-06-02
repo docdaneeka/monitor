@@ -36,28 +36,37 @@ public class NetworkScanPane extends JPanel {
 //        fieldPass.setBounds( 10, 80, 150, 20 );
 //        this.add( fieldPass );
         
-        JLabel label3 = new JLabel( "Otwarte porty:" );
-        label3.setBounds( 10, 30, 150, 20 );
-        this.add(label3);
-        JLabel label4 = new JLabel( "Komunikaty:" );
-        label4.setBounds( 160, 30, 150, 20 );
+        JLabel label31 = new JLabel( "Ports:" );
+        label31.setBounds( 10, 30, 150, 20 );
+        this.add(label31);
+        JLabel label32 = new JLabel( "State:" );
+        label32.setBounds( 97, 30, 150, 20 );
+        this.add(label32);
+        JLabel label33 = new JLabel( "PID:" );
+        label33.setBounds( 185, 30, 150, 20 );
+        this.add(label33);
+        JLabel label34 = new JLabel( "Program:" );
+        label34.setBounds( 275, 30, 150, 20 );
+        this.add(label34);
+        JLabel label4 = new JLabel( "Messages:" );
+        label4.setBounds( 450, 30, 150, 20 );
         this.add(label4);
-        JLabel label5 = new JLabel( "Przes³ane pakiety:" );
-        label5.setBounds( 160, 175, 150, 20 );
+        JLabel label5 = new JLabel( "Packages:" );
+        label5.setBounds( 160, 275, 150, 20 );
         this.add(label5);
         
         portTextField = new JTextArea ();
-        portTextField.setBounds( 10, 50, 100, 200 );
+        portTextField.setBounds( 10, 50, 400, 200 );
         portTextField.setEnabled(false);
 		this.add(portTextField);
 		
 		msgTextField = new JTextArea ();
-		msgTextField.setBounds( 160, 50, 600, 120 );
+		msgTextField.setBounds( 450, 50, 600, 200 );
 		msgTextField.setEnabled(false);
 		this.add(msgTextField);
 		
 		packageTextField = new JTextArea ();
-		packageTextField.setBounds( 160, 200, 600, 250 );
+		packageTextField.setBounds( 160, 300, 600, 150 );
 		packageTextField.setEnabled(false);
 		this.add(packageTextField);
     }
@@ -76,7 +85,7 @@ public class NetworkScanPane extends JPanel {
             	String [] fragmented;// = netstat_return.split("\n");
             	//number_of_ports = fragmented.length; //iloï¿½ï¿½ otwartych portï¿½w na poczï¿½tku
             	String textAreaContent = "";
-            	String new_ports = "";
+            	String new_text = "";
             	System.out.println("Dziala");
                 while(true) {
                 	netstat_return = ScriptExecutor.execScript (command);
@@ -96,21 +105,21 @@ public class NetworkScanPane extends JPanel {
                 	} //else zamkniêto else reszta
                 	if (flag_inc || flag_dec) {
                 		int i=0;
-                		new_ports = "";
+                		new_text = "";
                     	for (String s : fragmented) {
     						i++;
     						if(i==1 || i==2) continue;
                     		String [] s2 = s.split("\\s+");
                     		String [] s3 = s2[3].split(":");
-                    		new_ports = new_ports + s3[s3.length-1]+ "\n";
+                    		new_text = new_text + s3[s3.length-1]+ "\t" +s2[5] + "\t" + s2[6].split("/")[0] + "\t" + s2[6].split("/")[1] +"\n";
                     	}
-                    	String [] spl = new_ports.split(textAreaContent);
+                    	String [] spl = new_text.split(textAreaContent);
                     	if (textAreaContent == "" || flag_dec) {
-                    		textAreaContent = new_ports;
+                    		textAreaContent = new_text;
                     		portTextField.setText(textAreaContent);
                     	} else {
-                    		System.out.println(spl[0]);
-                    		msgTextField.setText("Otwarto nowe porty\n"+spl[0]);
+                    		System.out.println(spl[0].split("\t")[0]);
+                    		msgTextField.setText("Otwarto nowe porty\n"+spl[0].split("\t")[0]);
                     		textAreaContent = textAreaContent + spl[0]+"\n";
                     		portTextField.setText(textAreaContent);
                     	}
