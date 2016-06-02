@@ -52,6 +52,7 @@ class TabbedPane extends JFrame
                 	if(tabbedPane.getSelectedIndex() == 0){
                 		NetworkScanPane networkScanPane = (NetworkScanPane)panel1;
                 		networkScanPane.monitorPorts();
+                		//networkScanPane.scanHTTP(" ");
                 	}
                 }
             }

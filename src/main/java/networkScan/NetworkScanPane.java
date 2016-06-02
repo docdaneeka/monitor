@@ -14,6 +14,9 @@ public class NetworkScanPane extends JPanel {
 
     private static Thread port_monitor;
     static JTextArea portTextField;
+    private static Thread package_monitor;
+    static JTextArea packageTextField;
+    static JTextArea msgTextField;
 	public NetworkScanPane(){
         this.setLayout(null);
 
@@ -34,13 +37,29 @@ public class NetworkScanPane extends JPanel {
 //        this.add( fieldPass );
         
         JLabel label3 = new JLabel( "Otwarte porty:" );
-        label3.setBounds( 10, 15, 150, 20 );
+        label3.setBounds( 10, 30, 150, 20 );
         this.add(label3);
+        JLabel label4 = new JLabel( "Komunikaty:" );
+        label4.setBounds( 160, 30, 150, 20 );
+        this.add(label4);
+        JLabel label5 = new JLabel( "Przes³ane pakiety:" );
+        label5.setBounds( 160, 175, 150, 20 );
+        this.add(label5);
         
-        portTextField = portTextField = new JTextArea ();
-        portTextField.setBounds( 10, 50, 800, 400 );
+        portTextField = new JTextArea ();
+        portTextField.setBounds( 10, 50, 100, 200 );
         portTextField.setEnabled(false);
 		this.add(portTextField);
+		
+		msgTextField = new JTextArea ();
+		msgTextField.setBounds( 160, 50, 600, 120 );
+		msgTextField.setEnabled(false);
+		this.add(msgTextField);
+		
+		packageTextField = new JTextArea ();
+		packageTextField.setBounds( 160, 200, 600, 250 );
+		packageTextField.setEnabled(false);
+		this.add(packageTextField);
     }
     
     public void monitorPorts () {
@@ -50,31 +69,55 @@ public class NetworkScanPane extends JPanel {
 
             public void run() {
             	int number_of_ports = 0;
+            	boolean flag_inc = false;
+            	boolean flag_dec=false;
             	int n_ports;
-            	String netstat_return = ScriptExecutor.execScript (command);
-            	String [] fragmented = netstat_return.split("\n");
-            	number_of_ports = fragmented.length; //iloï¿½ï¿½ otwartych portï¿½w na poczï¿½tku
+            	String netstat_return;// = ScriptExecutor.execScript (command);
+            	String [] fragmented;// = netstat_return.split("\n");
+            	//number_of_ports = fragmented.length; //iloï¿½ï¿½ otwartych portï¿½w na poczï¿½tku
+            	String textAreaContent = "";
+            	String new_ports = "";
             	System.out.println("Dziala");
                 while(true) {
                 	netstat_return = ScriptExecutor.execScript (command);
                 	fragmented = netstat_return.split("\n");
                 	n_ports = fragmented.length;
-                	if (n_ports > number_of_ports) {
-                		//zostaï¿½ otwarty nowy port. Dodaï¿½ oflagowanie
+                	if (n_ports != number_of_ports) {
+                		if (n_ports > number_of_ports) {
+                			System.out.println("Otwarto nowe porty");
+                			msgTextField.setText("Otwarto nowe porty");
+                			flag_inc = true;
+                		} else {
+                			System.out.println("Zamkniêto porty");
+                			msgTextField.setText("Zamkniêto porty");
+                			flag_dec = true;
+                		}               		
                 		number_of_ports = n_ports;
-                	}
-                	String textAreaContent = "";
-
-					int i=0;
-                	for (String s : fragmented) {
-						i++;
-						if(i==1 || i==2) continue;
-                		String [] s2 = s.split("\\s+");
-                		String [] s3 = s2[3].split(".");
-//						System.out.println(s);
-                		textAreaContent = textAreaContent + s+ "\n ";
-                	}
-                	portTextField.setText(textAreaContent);
+                	} //else zamkniêto else reszta
+                	if (flag_inc || flag_dec) {
+                		int i=0;
+                		new_ports = "";
+                    	for (String s : fragmented) {
+    						i++;
+    						if(i==1 || i==2) continue;
+                    		String [] s2 = s.split("\\s+");
+                    		String [] s3 = s2[3].split(":");
+                    		new_ports = new_ports + s3[s3.length-1]+ "\n";
+                    	}
+                    	String [] spl = new_ports.split(textAreaContent);
+                    	if (textAreaContent == "" || flag_dec) {
+                    		textAreaContent = new_ports;
+                    		portTextField.setText(textAreaContent);
+                    	} else {
+                    		System.out.println(spl[0]);
+                    		msgTextField.setText("Otwarto nowe porty\n"+spl[0]);
+                    		textAreaContent = textAreaContent + spl[0]+"\n";
+                    		portTextField.setText(textAreaContent);
+                    	}
+                    	flag_inc = flag_dec = false;
+                	} else {
+                		portTextField.setText(textAreaContent);
+                	}        	
                 	
                 	try {
                         Thread.sleep(5000);
@@ -88,17 +131,34 @@ public class NetworkScanPane extends JPanel {
     }
     
     public static void scanHTTP (String network_interface) {
-		
-		String command = null;
-		
-		command = "ettercap -T -i "+network_interface+" | while read input; do \n"
+				
+		/*final String command = "sudo ettercap -T -i "+network_interface+" | while read input; do \n"
 				+ "if [[$input == *\"HTTP\"*]] || [[$input == *\"FTP\"*]] || [[$input == *\"TELNET\"*]]\n"
 				+ "then \n"
 				+ "echo $input \n"
 				+ "fi \n"
 				+ "done \n"
-				+ "done";
+				+ "done";*/
+		final String command = "ls -l";
 		//gksudo albo dodaï¿½ ettercap to wyjï¿½tkï¿½w
-			ScriptExecutor.execScript (command);
+		package_monitor = new Thread(new Runnable(){
+
+            public void run() {
+            	String ettercap_return = ScriptExecutor.execScript (command);
+                while(true) {
+                	ettercap_return = ScriptExecutor.execScript (command);
+                	
+                	String textAreaContent = ettercap_return;
+                	textAreaContent = textAreaContent + "\n";
+                	packageTextField.setText(textAreaContent);
+                	try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }     
+            }
+        });
+		package_monitor.start();
 	}
 }
