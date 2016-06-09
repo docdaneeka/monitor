@@ -97,12 +97,12 @@ public class NetworkScanPane extends JPanel {
                 			msgTextField.setText("Otwarto nowe porty");
                 			flag_inc = true;
                 		} else {
-                			System.out.println("Zamkniêto porty");
-                			msgTextField.setText("Zamkniêto porty");
+                			System.out.println("ZamkniÄ™to porty");
+                			msgTextField.setText("ZamkniÄ™to porty");
                 			flag_dec = true;
                 		}               		
                 		number_of_ports = n_ports;
-                	} //else zamkniêto else reszta
+                	} //else zamkniÄ™to else reszta
                 	if (flag_inc || flag_dec) {
                 		int i=0;
                 		new_text = "";
@@ -111,7 +111,11 @@ public class NetworkScanPane extends JPanel {
     						if(i==1 || i==2) continue;
                     		String [] s2 = s.split("\\s+");
                     		String [] s3 = s2[3].split(":");
-                    		new_text = new_text + s3[s3.length-1]+ "\t" +s2[5] + "\t" + s2[6].split("/")[0] + "\t" + s2[6].split("/")[1] +"\n";
+							String prog = "";
+							try{
+								prog = s2[6].split("/")[1];
+							} catch (Exception e){}
+                    		new_text = new_text + s3[s3.length-1]+ "\t" +s2[5] + "\t" + s2[6].split("/")[0] + "\t" + prog +"\n";
                     	}
                     	String [] spl = new_text.split(textAreaContent);
                     	if (textAreaContent == "" || flag_dec) {

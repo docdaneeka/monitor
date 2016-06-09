@@ -22,7 +22,7 @@ class TabbedPane extends JFrame
     public TabbedPane()
     {
         setTitle( "Monitoring cyber-zagrozen" );
-        setSize( 800, 500 );
+        setSize( 1000, 600 );
         setBackground( Color.gray );
 
         JPanel topPanel = new JPanel();

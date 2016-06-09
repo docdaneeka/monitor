@@ -157,12 +157,14 @@ public class DeviceScanPane extends JPanel {
 
         String command = "ls -l /sys/class/video4linux | grep /";
 
-        String lines[] = ScriptExecutor.execScript(command).split("\n");
+        String lines[] = ScriptExecutor.execScript(command).trim().split("\n");
 
         Object columnNames[] = {"BUS", "DEVICE", "NAME", "IN USAGE", "DEV_FILE", "PID", "PROCESS", "USER"};
         ArrayList<String[]> data = new ArrayList<>();
 
         for(String line : lines) {
+
+            if(line.trim().equals("")) continue;
 
             String out[] = line.split("\\s+");
 
@@ -186,7 +188,10 @@ public class DeviceScanPane extends JPanel {
                 }
             } catch (Exception e){}
 
-            String devFile = "/dev/" + out[out.length-3];
+            String devFile = null;
+            try {
+                devFile = "/dev/" + out[out.length - 3];
+            } catch (Exception e){}
 
             ArrayList<String[]> processes = getDeviceUsage(devFile);
 
